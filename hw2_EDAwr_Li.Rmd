@@ -121,6 +121,7 @@ Write a short paragraph describing the distribution of median incomes.
 ```{r}
 ggplot(data = county_df) + geom_histogram(aes(x = county_df$Income))
 ggplot(county_df, aes(county_df$Income)) + geom_density()
+ggplot(county_df) + geom_violin(aes(x=county_df$Income, stat = "ydensity"))
 ```
 
 ### Problem 3 - Histogram of total population
@@ -128,7 +129,7 @@ ggplot(county_df, aes(county_df$Income)) + geom_density()
 Create a histogram of total population for counties in the US.
 
 ```{r histo_totpop}
-ggplot(data = county_df) + geom_bar(mapping = aes(x=county_df$County, y= county_df$TotalPop))
+ggplot(data = county_df) + geom_bar(mapping = aes(x=county_df$TotalPop))
 ```
 
 Repeat the histogram about but make the following style changes to the plot.
@@ -162,15 +163,19 @@ differ with respect to distribution of median income over the counties?
 
 
 ```{r bp_inc_by_peninsula}
-
+ggplot(county_MI) + geom_boxplot(aes(x=county_MI$peninsula, y=county_MI$Income)) + labs(title = "Income by Peninsula", x = "Peninsula", y = "Income")
 ```
+**LP has a higher median income than UP.
 
 Create several more boxplots showing how the peninsulas compare with respect to
 some of the other variables. Summarize your findings in a few short paragraphs.
 
 ```{r more_boxplots}
-
+ggplot(county_MI) + geom_boxplot(aes(x=county_MI$peninsula, y=log(county_MI$TotalPop)))
+ggplot(county_MI) + geom_boxplot(aes(x=county_MI$peninsula, y=county_MI$Poverty))
+ggplot(county_MI) + geom_boxplot(aes(x=county_MI$peninsula, y=log(county_MI$Employed)))
 ```
+**LP has higher totalPopulation, lower poverty and higher Employment than UP.
 
 ### Problem 5 - How do regions of the country compare?
 
@@ -190,7 +195,7 @@ Create a bar chart showing the number of counties by Region in the US. Make sure
 your graph has a title and good axis labels.
 
 ```{r bar_counties_by_region}
-
+ggplot(county_df) + geom_bar(aes(x=county_df$Region)) + labs(title = "Number of Counties by Region", x = "Region", y = "Number of Counties")
 ```
 
 ### Problem 7 - Basic scatter plots
@@ -199,14 +204,14 @@ Create a scatter plot using the Michigan only data frame comparing
 Income and MeanCommute.
 
 ```{r xy_inc_commute}
-
+ggplot(county_MI) + geom_point(aes(x=county_MI$Income, y=county_MI$MeanCommute))
 ```
 
 Create a modified version of the above scatter plot in which the point color
 is mapped to peninsula.
 
 ```{r xy_inc_commute_peninsula}
-
+ggplot(county_MI) + geom_point(aes(x=county_MI$Income, y=county_MI$MeanCommute, color=peninsula))
 ```
 
 Your thoughts on the relationship between these variables?
@@ -216,7 +221,7 @@ you facet by peninsula as well. How do the relationships compare across the
 peninsulas?
 
 ```{r xy_faceted_peninsula}
-
+ggplot(county_MI) + geom_point(aes(x=county_MI$Unemployment, y=county_MI$TotalPop)) + facet_wrap(~peninsula)
 ```
 
 
@@ -225,7 +230,7 @@ Now use the full US data frame.
 Create a scatter plot of TotalPop by Income.
 
 ```{r xy_pop_inc}
-
+ggplot(county_df) + geom_point(aes(x=county_df$Income, y=county_df$TotalPop))
 ```
 
 The widely varying values make this difficult to interpret in terms of looking
@@ -233,6 +238,9 @@ for patterns. So, figure out a way to either change the axis scales or
 the plotted data itself to use a base 10 logarithmic scale (or transform).
 Write a short paragraph on why one might want to use a log scale or log
 transform of data when plotting.
+```{r}
+ggplot(county_df) + geom_point(aes(x=county_df$Income, y=log(county_df$TotalPop)))
+```
 
 ### Hacker Extra - More analysis
 
