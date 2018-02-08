@@ -119,9 +119,10 @@ income for the entire US.
 Write a short paragraph describing the distribution of median incomes.
 
 ```{r}
-ggplot(data = county_df) + geom_histogram(aes(x = county_df$Income))
+ggplot(data = county_df) + geom_histogram(aes(x = county_df$Income), binwidth = 200)
+ggplot(county_df) + geom_boxplot(aes(x=county_df$Income, y = log(TotalPop)))
 ggplot(county_df, aes(county_df$Income)) + geom_density()
-ggplot(county_df) + geom_violin(aes(x=county_df$Income, stat = "ydensity"))
+ggplot(county_df) + geom_violin(aes(x=county_df$Income, y = log(TotalPop)))
 ```
 
 ### Problem 3 - Histogram of total population
@@ -129,7 +130,7 @@ ggplot(county_df) + geom_violin(aes(x=county_df$Income, stat = "ydensity"))
 Create a histogram of total population for counties in the US.
 
 ```{r histo_totpop}
-ggplot(data = county_df) + geom_bar(mapping = aes(x=county_df$TotalPop))
+ggplot(data = county_df) + geom_histogram(mapping = aes(x=log(county_df$TotalPop)))
 ```
 
 Repeat the histogram about but make the following style changes to the plot.
@@ -140,16 +141,23 @@ Repeat the histogram about but make the following style changes to the plot.
 * Change the colors of the bars to something other than the default black
 
 ```{r histo_stylechanges}
-
+ggplot(data = county_df) + geom_histogram(mapping = aes(x=log(county_df$TotalPop)), color= "green" ) + labs(title = "Distribution of population for US counties", x = "Total Population", y = "Number of counties")
 ```
 
 **Hacker Extra** - Also create a kernel density plot overlaid on a histogram of
 Income. 
+```{r histo&kernel}
+
+ggplot(county_df, aes(x=county_df$Income)) + 
+    geom_histogram(aes(y=..density..),      
+                   colour="black", fill="white") +
+    geom_density(alpha=.2, color="Red") 
+```
 
 Repeat the histogram but only for counties with less than 2.5 million people.
 
 ```{r histo_lt2.5m}
-
+ggplot(data = county_df) + geom_histogram(mapping = aes(x=county_df$TotalPop))+ scale_x_continuous(limits = c(0, 2500000)) + scale_y_continuous(limits = c(0, 750))
 ```
 
 
@@ -241,7 +249,7 @@ transform of data when plotting.
 ```{r}
 ggplot(county_df) + geom_point(aes(x=county_df$Income, y=log(county_df$TotalPop)))
 ```
-
+Because total population value is too large and y axis is limited, then most of the point would be gathered together in the bottom, using log10 can make the number smaller and easier to differentiate from each other, which would make the plot looks nicer. 
 ### Hacker Extra - More analysis
 
 Do some additional plotting to look for interesting patterns or relationships
