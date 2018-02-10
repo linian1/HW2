@@ -42,6 +42,8 @@ track the .R file, the .Rmd file and your .gitignore file. Create a remote repo
 for this homework assignment in your GitHub account. Periodically push your commits
 to GitHub. When done with the assignment, paste in the URL of your GitHub project
 so that I can go look at it.
+**
+URL:https://github.com/linian1/HW2
 
 ## Step 3 - Set working directory and explore data folder
 
@@ -103,6 +105,7 @@ str(county_MI)
 summary(county_MI)
 
 ```
+THere are not any NA value.
 
 The county_MI data frame contains data for Michigan only and includes an
 peninsula field. See **census_data_prep.R** to see how this field was
@@ -124,6 +127,7 @@ ggplot(county_df) + geom_boxplot(aes(x=county_df$Income, y = log(TotalPop)))
 ggplot(county_df, aes(county_df$Income)) + geom_density()
 ggplot(county_df) + geom_violin(aes(x=county_df$Income, y = log(TotalPop)))
 ```
+**From the plots, we know that the majority of people have income ranging from around 3000 to 5000. 
 
 ### Problem 3 - Histogram of total population
 
@@ -147,7 +151,6 @@ ggplot(data = county_df) + geom_histogram(mapping = aes(x=log(county_df$TotalPop
 **Hacker Extra** - Also create a kernel density plot overlaid on a histogram of
 Income. 
 ```{r histo&kernel}
-
 ggplot(county_df, aes(x=county_df$Income)) + 
     geom_histogram(aes(y=..density..),      
                    colour="black", fill="white") +
@@ -157,6 +160,8 @@ ggplot(county_df, aes(x=county_df$Income)) +
 Repeat the histogram but only for counties with less than 2.5 million people.
 
 ```{r histo_lt2.5m}
+ggplot(data = county_df) + geom_histogram(mapping = aes(x=county_df$TotalPop))+ scale_x_continuous(limits = c(0, 2500000)) 
+#I adjust Y axis to make it look better
 ggplot(data = county_df) + geom_histogram(mapping = aes(x=county_df$TotalPop))+ scale_x_continuous(limits = c(0, 2500000)) + scale_y_continuous(limits = c(0, 750))
 ```
 
@@ -168,7 +173,6 @@ your graph has a title and good axis labels.
 
 Do the peninsulas 
 differ with respect to distribution of median income over the counties?
-
 
 ```{r bp_inc_by_peninsula}
 ggplot(county_MI) + geom_boxplot(aes(x=county_MI$peninsula, y=county_MI$Income)) + labs(title = "Income by Peninsula", x = "Peninsula", y = "Income")
@@ -183,7 +187,7 @@ ggplot(county_MI) + geom_boxplot(aes(x=county_MI$peninsula, y=log(county_MI$Tota
 ggplot(county_MI) + geom_boxplot(aes(x=county_MI$peninsula, y=county_MI$Poverty))
 ggplot(county_MI) + geom_boxplot(aes(x=county_MI$peninsula, y=log(county_MI$Employed)))
 ```
-**LP has higher totalPopulation, lower poverty and higher Employment than UP.
+**From the graphs, we can tell that LP has higher totalPopulation, slightly lower poverty and higher Employment than UP.
 
 ### Problem 5 - How do regions of the country compare?
 
@@ -194,7 +198,9 @@ distribution of MeanCommute time. Make sure your graph has a title and good axis
 labels.
 
 ```{r faceted_histo}
-
+ggplot(county_df) + geom_histogram(aes(x=county_df$MeanCommute)) + facet_wrap(~county_df$Region) + labs(title = "Distribution of MeanCommute by Region", x = "MeanCommute Time", y = "Count")
+ggplot(county_df) + geom_histogram(aes(x=log(county_df$TotalPop))) + facet_wrap(~county_df$Region) + labs(title = "Distribution of TotalPopulation by Region", x = "Total Population", y = "Count")
+ggplot(county_df) + geom_histogram(aes(x=log(county_df$Employed))) + facet_wrap(~county_df$Region) + labs(title = "Distribution of Employment by Region", x ="Employment", y = "Count")
 ```
 
 ### Problem 6 - Basic bar chart
@@ -223,15 +229,18 @@ ggplot(county_MI) + geom_point(aes(x=county_MI$Income, y=county_MI$MeanCommute, 
 ```
 
 Your thoughts on the relationship between these variables?
+**From the plot, we see that UP has comparably lower income with lower MeanCommute time while LP has higher income with longer MeanCommute time.
 
 Now, create a few more scatter plots using variables of your choosing in which
 you facet by peninsula as well. How do the relationships compare across the
 peninsulas?
 
 ```{r xy_faceted_peninsula}
-ggplot(county_MI) + geom_point(aes(x=county_MI$Unemployment, y=county_MI$TotalPop)) + facet_wrap(~peninsula)
+ggplot(county_MI) + geom_point(aes(x=county_MI$Income, y=log(county_MI$TotalPop))) + facet_wrap(~peninsula)
+ggplot(county_MI) + geom_point(aes(x=county_MI$Citizen, y=county_MI$TotalPop)) + facet_wrap(~peninsula)
+ggplot(county_MI) + geom_point(aes(x=county_MI$ChildPoverty, y=county_MI$Income)) + facet_wrap(~peninsula)
 ```
-
+From the scatter plots, I feel the relationship between Income & TotalPop, Citizen & TotalPop, Income & ChildPoverty are kind of same across the peninsulas.
 
 Now use the full US data frame.
 
@@ -249,10 +258,17 @@ transform of data when plotting.
 ```{r}
 ggplot(county_df) + geom_point(aes(x=county_df$Income, y=log(county_df$TotalPop)))
 ```
-Because total population value is too large and y axis is limited, then most of the point would be gathered together in the bottom, using log10 can make the number smaller and easier to differentiate from each other, which would make the plot looks nicer. 
+Because total population value is too large and y axis is limited and highest one way more bigher than the majority, in order to show all of them in the same graph, most of the points would be adjusted to gather together in the bottom, using log10 can make the number smaller, closer to each other and the difference wouldn't be too large to be shown in the same graph, which would make the plot looks nicer. 
 ### Hacker Extra - More analysis
 
 Do some additional plotting to look for interesting patterns or relationships
 either in the full US dataset or the MI only dataset. In addition, try out
 some of ggplots additional features such as themes, axis formatting, gridline
 control, or others.
+```{r more analysis}
+ggplot(county_df) + geom_point(aes(x=county_df$Production, y=log(county_df$TotalPop)))+ theme(axis.text.x = element_blank(),
+  axis.text.y = element_blank())
+ggplot(county_df) + geom_point(aes(x=county_df$Production, y=county_df$Poverty))+ theme(axis.text.x = element_text(face="bold", color="Blue", size=14, angle=45), axis.text.y = element_text(face="bold", color="Green", size=14, angle=45))
+ggplot(county_df) + geom_point(aes(x=log(county_df$Employed), y=county_df$Asian)) + theme(panel.grid.minor = element_line(colour="blue", size=0.5))
+```
+
